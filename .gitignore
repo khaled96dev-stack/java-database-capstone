@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Local Spring Boot overrides (contains real DB credentials, never commit)
+application-local.properties
+app/src/main/resources/application-local.properties
