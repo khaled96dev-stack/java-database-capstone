@@ -6,13 +6,19 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.project.back_end.DTO.Login;
+import com.project.back_end.models.Patient;
+import com.project.back_end.repo.PatientRepository;
+
 @org.springframework.stereotype.Service
 public class Service {
 
     private final TokenService tokenService;
+    private final PatientRepository patientRepository;
 
-    public Service(TokenService tokenService) {
+    public Service(TokenService tokenService, PatientRepository patientRepository) {
         this.tokenService = tokenService;
+        this.patientRepository = patientRepository;
     }
 
     // Returns an empty body with 200 OK when the token is valid for the given role,
@@ -24,6 +30,28 @@ public class Service {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
         return ResponseEntity.ok(response);
+    }
+
+    // Returns false if a patient with the same email or phone already exists.
+    public boolean validatePatient(Patient patient) {
+        return patientRepository.findByEmailOrPhone(patient.getEmail(), patient.getPhone()) == null;
+    }
+
+    // Checks patient credentials and returns a JWT on success.
+    public ResponseEntity<Map<String, String>> validatePatientLogin(Login login) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            Patient patient = patientRepository.findByEmail(login.getEmail());
+            if (patient == null || !patient.getPassword().equals(login.getPassword())) {
+                response.put("error", "Invalid email or password");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+            response.put("token", tokenService.generateToken(patient.getEmail()));
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("error", "Internal server error");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
 // 4. **validateAdmin Method**
@@ -51,21 +79,6 @@ public class Service {
 // - If no matching time slot is found, it returns 0 (invalid).
 // - If the doctor doesn’t exist, it returns -1.
 // This logic prevents overlapping or invalid appointment bookings.
-
-// 7. **validatePatient Method**
-// This method checks whether a patient with the same email or phone number already exists in the system.
-// - If a match is found, it returns false (indicating the patient is not valid for new registration).
-// - If no match is found, it returns true.
-// This helps enforce uniqueness constraints on patient records and prevent duplicate entries.
-
-// 8. **validatePatientLogin Method**
-// This method handles login validation for patient users.
-// - It looks up the patient by email.
-// - If found, it checks whether the provided password matches the stored one.
-// - On successful validation, it generates a JWT token and returns it with a 200 OK status.
-// - If the password is incorrect or the patient doesn't exist, it returns a 401 Unauthorized with a relevant error.
-// - If an exception occurs, it returns a 500 Internal Server Error.
-// This method ensures only legitimate patients can log in and access their data securely.
 
 // 9. **filterPatient Method**
 // This method filters a patient's appointment history based on condition and doctor name.

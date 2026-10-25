@@ -1,20 +1,53 @@
 package com.project.back_end.services;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import com.project.back_end.models.Patient;
+import com.project.back_end.repo.PatientRepository;
+
+@Service
 public class PatientService {
-// 1. **Add @Service Annotation**:
-//    - The `@Service` annotation is used to mark this class as a Spring service component. 
-//    - It will be managed by Spring's container and used for business logic related to patients and appointments.
-//    - Instruction: Ensure that the `@Service` annotation is applied above the class declaration.
 
-// 2. **Constructor Injection for Dependencies**:
-//    - The `PatientService` class has dependencies on `PatientRepository`, `AppointmentRepository`, and `TokenService`.
-//    - These dependencies are injected via the constructor to maintain good practices of dependency injection and testing.
-//    - Instruction: Ensure constructor injection is used for all the required dependencies.
+    private final PatientRepository patientRepository;
+    private final TokenService tokenService;
 
-// 3. **createPatient Method**:
-//    - Creates a new patient in the database. It saves the patient object using the `PatientRepository`.
-//    - If the patient is successfully saved, the method returns `1`; otherwise, it logs the error and returns `0`.
-//    - Instruction: Ensure that error handling is done properly and exceptions are caught and logged appropriately.
+    public PatientService(PatientRepository patientRepository, TokenService tokenService) {
+        this.patientRepository = patientRepository;
+        this.tokenService = tokenService;
+    }
+
+    // Saves a new patient. Returns 1 on success, 0 on failure.
+    public int createPatient(Patient patient) {
+        try {
+            patientRepository.save(patient);
+            return 1;
+        } catch (Exception e) {
+            System.err.println("Error creating patient: " + e.getMessage());
+            return 0;
+        }
+    }
+
+    // Looks up the patient that owns the given token.
+    public ResponseEntity<Map<String, Object>> getPatientDetails(String token) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Patient patient = patientRepository.findByEmail(tokenService.extractEmail(token));
+            if (patient == null) {
+                response.put("error", "Patient not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+            response.put("patient", patient);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("error", "Failed to fetch patient details");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
 
 // 4. **getPatientAppointment Method**:
 //    - Retrieves a list of appointments for a specific patient, based on their ID.
@@ -38,12 +71,6 @@ public class PatientService {
 //    - This method combines filtering by doctor name and appointment status (past or future).
 //    - Converts the appointments into `AppointmentDTO` objects and returns them in the response.
 //    - Instruction: Ensure that the filter handles both doctor name and condition properly, and catches errors for invalid input.
-
-// 8. **getPatientDetails Method**:
-//    - Retrieves patient details using the `tokenService` to extract the patient's email from the provided token.
-//    - Once the email is extracted, it fetches the corresponding patient from the `patientRepository`.
-//    - It returns the patient's information in the response body.
-    //    - Instruction: Make sure that the token extraction process works correctly and patient details are fetched properly based on the extracted email.
 
 // 9. **Handling Exceptions and Errors**:
 //    - The service methods handle exceptions using try-catch blocks and log any issues that occur. If an error occurs during database operations, the service responds with appropriate HTTP status codes (e.g., `500 Internal Server Error`).
