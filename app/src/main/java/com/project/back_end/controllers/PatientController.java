@@ -63,21 +63,29 @@ public class PatientController {
     }
 
 
-// 6. Define the `getPatientAppointment` Method:
-//    - Handles HTTP GET requests to fetch appointment details for a specific patient.
-//    - Requires the patient ID, token, and user role as path variables.
-//    - Validates the token using the shared service.
-//    - If valid, retrieves the patient's appointment data from `PatientService`; otherwise, returns a validation error.
+    // Appointments for a patient. The frontend adds the caller's role ("patient" or "doctor");
+    // without it the token must belong to a patient.
+    @GetMapping({"/{id}/{token}", "/{id}/{user}/{token}"})
+    public ResponseEntity<Map<String, Object>> getPatientAppointment(@PathVariable Long id,
+            @PathVariable(required = false) String user,
+            @PathVariable String token) {
+        String role = (user == null) ? "patient" : user;
+        Map<String, String> errors = service.validateToken(token, role).getBody();
+        if (errors != null && !errors.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashMap<>(errors));
+        }
+        return patientService.getPatientAppointment(id, token);
+    }
 
-
-// 7. Define the `filterPatientAppointment` Method:
-//    - Handles HTTP GET requests to filter a patient's appointments based on specific conditions.
-//    - Accepts filtering parameters: `condition`, `name`, and a token.
-//    - Token must be valid for a `"patient"` role.
-//    - If valid, delegates filtering logic to the shared service and returns the filtered result.
-
-
-
+    // condition is "past"/"future" and name is a doctor name; either may be the literal "null".
+    @GetMapping("/filter/{condition}/{name}/{token}")
+    public ResponseEntity<Map<String, Object>> filterPatientAppointment(@PathVariable String condition,
+            @PathVariable String name,
+            @PathVariable String token) {
+        Map<String, String> errors = service.validateToken(token, "patient").getBody();
+        if (errors != null && !errors.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new HashMap<>(errors));
+        }
+        return service.filterPatient(condition, name, token);
+    }
 }
-
-

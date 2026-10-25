@@ -1,16 +1,21 @@
 package com.project.back_end.DTO;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+
+// Login request body. "identifier" is the email for Doctor/Patient and the username for Admin.
 public class Login {
 
-    private String email;
+    // The frontend sends this field as "email", so accept both names.
+    @JsonAlias("email")
+    private String identifier;
     private String password;
 
-    public String getEmail() {
-        return email;
+    public String getIdentifier() {
+        return identifier;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 
     public String getPassword() {

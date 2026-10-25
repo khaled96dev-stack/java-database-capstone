@@ -52,7 +52,7 @@ public class TokenService {
     }
 
     // Verifies the token signature/expiry and returns its subject.
-    public String extractEmail(String token) {
+    public String extractIdentifier(String token) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
@@ -64,7 +64,7 @@ public class TokenService {
     // Returns true if the token is valid and belongs to an existing user of the given role.
     public boolean validateToken(String token, String user) {
         try {
-            String identifier = extractEmail(token);
+            String identifier = extractIdentifier(token);
             if (identifier == null) {
                 return false;
             }
