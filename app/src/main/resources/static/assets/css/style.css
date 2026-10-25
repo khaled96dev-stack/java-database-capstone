@@ -155,8 +155,13 @@
       align-items: flex-start;
     }
   
+    .footer-logo {
+      flex-basis: auto;
+    }
+
     .footer-links {
       flex-direction: column;
+      flex-basis: auto;
       gap: 20px;
     }
   }

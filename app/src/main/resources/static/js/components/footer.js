@@ -14,21 +14,21 @@ function renderFooter() {
         <div class="footer-links">
           <div class="footer-column">
             <h4>Company</h4>
-            <a href="#">About</a>
-            <a href="#">Careers</a>
-            <a href="#">Press</a>
+            <a href="/pages/info.html#about">About</a>
+            <a href="/pages/info.html#careers">Careers</a>
+            <a href="/pages/info.html#press">Press</a>
           </div>
           <div class="footer-column">
             <h4>Support</h4>
-            <a href="#">Account</a>
-            <a href="#">Help Center</a>
-            <a href="#">Contact Us</a>
+            <a href="/pages/info.html#account">Account</a>
+            <a href="/pages/info.html#help">Help Center</a>
+            <a href="/pages/info.html#contact">Contact Us</a>
           </div>
           <div class="footer-column">
             <h4>Legals</h4>
-            <a href="#">Terms &amp; Conditions</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Licensing</a>
+            <a href="/pages/info.html#terms">Terms &amp; Conditions</a>
+            <a href="/pages/info.html#privacy">Privacy Policy</a>
+            <a href="/pages/info.html#licensing">Licensing</a>
           </div>
         </div>
       </div>

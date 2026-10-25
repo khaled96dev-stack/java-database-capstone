@@ -1,0 +1,214 @@
+/* info.css: styles for the footer info pages (pages/info.html) */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Roboto', sans-serif;
+  color: #0a0a23;
+  background-color: #fff;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.logo-link {
+  text-decoration: none;
+}
+
+.info-layout {
+  flex-grow: 1;
+  display: flex;
+  gap: 40px;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* Side navigation */
+.info-nav {
+  flex: 0 0 210px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.info-nav h4 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #5b6470;
+  margin-bottom: 8px;
+}
+
+.info-nav a {
+  display: block;
+  padding: 7px 12px;
+  border-radius: 8px;
+  color: #0a0a23;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.info-nav a:hover {
+  background-color: #f4f4f4;
+}
+
+.info-nav a.active {
+  background-color: #015c5d;
+  color: #fff;
+}
+
+/* Page content */
+.info-content {
+  flex: 1 1 auto;
+  min-width: 0;
+  line-height: 1.6;
+}
+
+.info-content .eyebrow {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #015c5d;
+  font-weight: bold;
+}
+
+.info-content h1 {
+  font-family: 'Alegreya', 'Roboto', sans-serif;
+  font-size: 40px;
+  color: #003e3e;
+  margin: 4px 0 12px;
+}
+
+.info-content .lead {
+  font-size: 18px;
+  color: #3d4550;
+  margin-bottom: 28px;
+}
+
+.info-content h3 {
+  font-size: 18px;
+  color: #003e3e;
+  margin: 28px 0 8px;
+}
+
+.info-content p {
+  margin-bottom: 12px;
+}
+
+.info-content ul {
+  margin: 0 0 12px 20px;
+}
+
+.info-content li {
+  margin-bottom: 6px;
+}
+
+.info-content a {
+  color: #015c5d;
+}
+
+.info-content .updated {
+  font-size: 13px;
+  color: #5b6470;
+  margin-top: 32px;
+}
+
+/* Cards (stats, jobs, press items, contact) */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 16px 0 8px;
+}
+
+.card {
+  border: 1px solid #e2e5e9;
+  border-radius: 12px;
+  padding: 18px;
+  background-color: #fafbfb;
+}
+
+.card h4 {
+  font-size: 16px;
+  color: #003e3e;
+  margin-bottom: 6px;
+}
+
+.card .meta {
+  font-size: 13px;
+  color: #5b6470;
+  margin-bottom: 8px;
+}
+
+.card .stat {
+  font-size: 30px;
+  font-weight: bold;
+  color: #015c5d;
+}
+
+.contact-card {
+  border: 1px solid #015c5d;
+  background-color: #f2f8f8;
+}
+
+.contact-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+  overflow-wrap: anywhere;
+}
+
+/* style.css colors every span red, so reset it here */
+.contact-row span {
+  color: #0a0a23;
+}
+
+.contact-row span:first-child {
+  flex: 0 0 70px;
+  color: #5b6470;
+}
+
+/* FAQ */
+.faq details {
+  border-bottom: 1px solid #e2e5e9;
+  padding: 12px 0;
+}
+
+.faq summary {
+  cursor: pointer;
+  font-weight: bold;
+  color: #003e3e;
+}
+
+.faq details p {
+  margin: 8px 0 0;
+}
+
+@media (max-width: 768px) {
+  .info-layout {
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px 16px;
+  }
+
+  .info-nav {
+    flex: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .info-content h1 {
+    font-size: 32px;
+  }
+}
