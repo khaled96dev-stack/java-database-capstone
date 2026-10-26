@@ -1,0 +1,15 @@
+# Build output and IDE files are not needed in the build context
+target/
+.idea/
+.vscode/
+*.iml
+*.log
+HELP.md
+
+# DB seed scripts are mounted into the database containers, not the app image
+docker/
+docker-compose.yml
+
+# Real DB credentials must never be baked into the image.
+# Configure the container with SPRING_* environment variables instead.
+src/main/resources/application-local.properties

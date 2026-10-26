@@ -1,0 +1,58 @@
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/cms?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/prescriptions
+
+  mysql:
+    image: mysql:8.0
+    restart: always
+    ports:
+      - "3307:3306" # host 3307 so it doesn't clash with the local MySQL80 service
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cms
+    volumes:
+      # Runs 01-schema (tables + stored procedures) and 02-data (admin, doctors, patients, appointments)
+      # on the first start, when the data volume is still empty.
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d:ro
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      # Check over TCP: the temporary server MySQL runs while loading the init
+      # scripts has networking disabled, so this only passes once seeding is done.
+      test: ["CMD", "mysql", "-h127.0.0.1", "-uroot", "-proot", "-e", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 120s # first start initializes and seeds the database
+
+  mongodb:
+    image: mongo:6.0
+    restart: always
+    ports:
+      - "27018:27017" # host 27018 so it doesn't clash with the local MongoDB service
+    volumes:
+      # Loads the demo prescriptions on the first start.
+      - ./docker/mongo-init:/docker-entrypoint-initdb.d:ro
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 })"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  mysql-data:
+  mongo-data:
